@@ -26,23 +26,23 @@ while i==0:
             data=""
         if(data != b'\r'):
             packet +=str(data)
-        #print(str((out*100)/samples)+'%')
+        
         if(data == b'\r'):
             packet=packet.replace("'","")
             packet=packet.replace("b","")
             packet=packet.replace("C0S3","mmHg")
-            #packet=packet.replace(";","\n")
-            #packet=packet.replace("T","")
-            #packet=packet.replace(" ","")
-            #packet=packet.replace("S","\nSystem Status:")
-            #packet=packet.replace(";A","\nPatient Mode:")
-            #packet=packet.replace(";C","\nMeasurement Mode:")
-            #packet=packet.replace(";M","\nError Information:")
+            
             if (("S" in packet) and (";A" in packet) and (";C" in packet)):
                 packet2 = packet.split(";")
-                print(packet2)
+                print(packet2[0].replace("S","System Status: "))
+                print(packet2[1].replace("A","Patient Mode: "))
+                print(packet2[2].replace("C","Measurement Mode: "))
+                print(packet2[3].replace("M","Error Information: "))
+                print(packet2[5].replace("R","Pulse Rate: ")+"bpm")
                 packet3 = list(packet2[4])
-                print(packet3)
+                print("SYS: "+packet3[1]+packet3[2]+packet3[3]+"mmHg")
+                print("DIA: "+packet3[4]+packet3[5]+packet3[6]+"mmHg")
+                print("MEAN: "+packet3[7]+packet3[8]+packet3[9]+"mmHg")
             else:
                 print(packet)
 
