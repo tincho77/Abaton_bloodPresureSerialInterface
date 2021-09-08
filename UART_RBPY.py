@@ -4,7 +4,21 @@
 from struct import pack
 import serial
 import serial.tools.list_ports
-import array
+import RPi.GPIO as GPIO
+
+#GPIO initialization
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(23, GPIO.OUT) #S0
+GPIO.setup(24, GPIO.OUT) #S1
+GPIO.setup(22, GPIO.OUT) #SW0 charger (5.5V)
+GPIO.setup(27, GPIO.OUT) #SW1 Load (3.3V)
+
+#UART channel selection (default)  S0=0 S1=0 -> TX1|RX1 Selected of 74HC4052 multiplexer
+GPIO.output(23, GPIO.LOW) #S0
+GPIO.output(24, GPIO.LOW) #S1
+GPIO.output(22, GPIO.LOW) #SW0
+GPIO.output(27, GPIO.HIGH) #SW1
 
 # Port initialization
 serialInst = serial.Serial()
@@ -37,7 +51,7 @@ while i==0:
                 print(packet2[0].replace("S","System Status: "))
                 print(packet2[1].replace("A","Patient Mode: "))
                 print(packet2[2].replace("C","Measurement Mode: "))
-                print(packet2[3].replace("M","Error Information: "))
+                print(packet2[3].replace("M","Error Information: ")+"\n")
                 print(packet2[5].replace("R","Pulse Rate: ")+"bpm")
                 packet3 = list(packet2[4])
                 print("SYS: "+packet3[1]+packet3[2]+packet3[3]+"mmHg")
@@ -48,6 +62,8 @@ while i==0:
 
             if(packet=="999"):
                 print("Measurement Result:\n")
+                GPIO.output(22, GPIO.HIGH) #SW0
+                GPIO.output(27, GPIO.LOW) #SW1
                 serialInst.write("\x0218;;DF\x03".encode())
                 
             packet=''
