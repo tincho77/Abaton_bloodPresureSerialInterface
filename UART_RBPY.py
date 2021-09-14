@@ -18,7 +18,7 @@ GPIO.setup(27, GPIO.OUT) #SW1 Load (3.3V)
 GPIO.output(23, GPIO.LOW) #S0
 GPIO.output(24, GPIO.LOW) #S1
 GPIO.output(22, GPIO.LOW) #SW0
-GPIO.output(27, GPIO.HIGH) #SW1
+GPIO.output(27, GPIO.LOW) #SW1
 
 # Port initialization
 serialInst = serial.Serial()
@@ -62,8 +62,8 @@ while i==0:
 
             if(packet=="999"):
                 print("Measurement Result:\n")
-                GPIO.output(22, GPIO.HIGH) #SW0
-                GPIO.output(27, GPIO.LOW) #SW1
+                #GPIO.output(22, GPIO.HIGH) #SW0
+                #GPIO.output(27, GPIO.HIGH) #SW1
                 serialInst.write("\x0218;;DF\x03".encode())
                 
             packet=''
